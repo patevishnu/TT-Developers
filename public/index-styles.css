@@ -49,7 +49,10 @@ li {
     overflow: hidden;
     margin-left: 15%;
 }
-
+.im:hover
+{
+    cursor:pointer;
+}
 .img-container {
     width: 100%;
     display: flex;
