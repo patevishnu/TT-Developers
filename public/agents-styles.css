@@ -39,7 +39,10 @@ header {
     margin-bottom: 3%;
     /* width: fit-content; */
 }
-
+.back:hover
+      {
+            cursor:pointer;
+      }
 .logo-container {
     display: flex;
     align-items: center;
