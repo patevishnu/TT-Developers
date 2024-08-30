@@ -9,6 +9,12 @@ app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static('public'));
 mongoose.connect("mongodb+srv://sumit_pate:root@cluster0.8r4ve7j.mongodb.net/MyBlog",{useNewUrlParser:true});
+
+const login_schema={
+  user_id:String,
+  password:String
+}
+
 const emailSchema={
   Name:String,
   Email:String,
@@ -19,7 +25,7 @@ const userSchema={
 }
 const User_email=mongoose.model("user_email",userSchema);
 const NewEmail=mongoose.model("NewEmail",emailSchema);
-
+const newLogin=mongoose.model("newLogin",login_schema);
 app.post("/contact.html",function(req,res)
 {
   console.log(req.body.name);
@@ -113,16 +119,112 @@ app.post("/properties.html",function(req,res)
 //  res.render("properties",{result:result});
 
 })
+/****************************************************************************/
+app.get('/',function(req,res)
+{
+    res.render('login',{message: "Enter your login credentials"});
+})
+let Users=[];
+let Users_new=[];
+app.post('/',function(req,res)
+{
+  /*****************************************************************/
+  newLogin.find({})
+  .then(function(loginData)
+{
+  for(let i=0;i<loginData.length;i++)
+  {
+    let newUser = {id:loginData[i].user_id, password: loginData[i].password};
+    Users.push(newUser);
+  }
+
+  if(!req.body.id || !req.body.password){
+     res.render('login', {message: "Please enter both id and password"});
+  } else {
+     console.log("vishnu pate hi ");
+     console.log(Users.length);
+     for(let i=0;i<Users.length;i++)
+     {
+       console.log("hi vishnu pate vishnu pate");
+        if(Users[i].id === req.body.id && Users[i].password === req.body.password){
+
+           res.redirect('/home');
+        }
+     }
+
+     res.render('login', {message: "Invalid credentials!"});
+  }
+
+})
+.catch(function(err)
+{
+  if(err)
+  {
+    console.log(err);
+  }
+  else
+  {
+    console.log("successfully saved");
+  }
+});
+  /*****************************************************************/
+
+})
+app.get('/signup',function(req,res)
+{
+  res.render('signup',{message:"Create your account"});
+})
+app.post('/signup',function(req,res)
+{
+  newLogin.find({})
+  .then(function(loginData)
+{
+  for(let i=0;i<loginData.length;i++)
+  {
+    let newUser = {id:loginData[i].user_id, password: loginData[i].password};
+    Users_new.push(newUser);
+  }
+
+  for(let i=0;i<Users_new.length;i++)
+        {
+        if(Users_new[i].id===req.body.id)
+        {
+          res.render('login',{message:"User Already Exists ! Login or choose anotheuser id "});
+        }
+      }
+      console.log(req.body.id);
+      let NewLogin=new newLogin({
+        user_id:req.body.id,
+        password:req.body.password
+      });
+      NewLogin.save();
+
+      res.redirect('/');
+
+})
+.catch(function(err)
+{
+  if(err)
+  {
+    console.log(err);
+  }
+  else
+  {
+    console.log("successfully saved");
+  }
+});
+
+})
 
 
 
 
-
-app.get("/",function(req,res)
+/****************************************************************************/
+app.get("/home",function(req,res)
 {
    res.sendFile(__dirname+"/index.html");
 })
-app.post("/",function(req,res)
+app.post("/home",function(req,res)
 {
   res.send("i got the response");
 })
