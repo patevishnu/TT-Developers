@@ -191,15 +191,19 @@ app.post('/signup',function(req,res)
         {
           res.render('login',{message:"User Already Exists ! Login or choose anotheuser id "});
         }
-      }
-      console.log(req.body.id);
-      let NewLogin=new newLogin({
-        user_id:req.body.id,
-        password:req.body.password
-      });
-      NewLogin.save();
+        else
+        {
+          console.log(req.body.id);
+          let NewLogin=new newLogin({
+            user_id:req.body.id,
+            password:req.body.password
+          });
+          NewLogin.save();
 
-      res.redirect('/');
+          res.redirect('/');
+        }
+      }
+
 
 })
 .catch(function(err)
